@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTagsTable extends Migration
+class CreateRepositoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,13 @@ class CreateTagsTable extends Migration
      */
     public function up()
     {
-        Schema::create('tags', function (Blueprint $table) {
+        Schema::create('repositories', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->integer('repository_id');
+            $table->string('repository_name')->nullable();;
             $table->text('description')->nullable();
-            $table->integer('id_repository');
-            $table->string('created_tag_by_username');
+            $table->string('http_url')->nullable();;
+            $table->string('language')->nullable();;
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ class CreateTagsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tags');
+        Schema::dropIfExists('repositories');
     }
 }
