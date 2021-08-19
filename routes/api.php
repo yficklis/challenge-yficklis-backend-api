@@ -22,3 +22,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::apiResource('/repositories', RepositoriesController::class);
 Route::apiResource('/tags', TagsController::class);
+Route::get('/tags/search/{name}', [TagsController::class, 'search']);
