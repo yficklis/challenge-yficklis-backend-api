@@ -34,9 +34,13 @@ class RepositoriesModel extends Model
 
     private function getStarredByUserOnGitHub($user): array
     {
-        $context = stream_context_create(self::optionsHTTPS());
-        $content = file_get_contents("https://api.github.com/users/{$user}/starred", false, $context);
-        return json_decode($content);
+        try {
+            $context = stream_context_create(self::optionsHTTPS());
+            $content = file_get_contents("https://api.github.com/users/{$user}/starred", false, $context);
+            return json_decode($content);
+        } catch (\Throwable $th) {
+            throw new InvalidArgumentException('Empty name user or Invalid, please try again!');
+        }
     }
 
     public function listRepositories($user): array
