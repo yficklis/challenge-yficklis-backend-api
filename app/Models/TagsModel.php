@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
-use App\Http\Controllers\RepositoriesController;
+use App\Models\RepositoriesModel;
 use Illuminate\Support\Facades\Validator;
 
 class TagsModel extends Model
@@ -24,55 +24,31 @@ class TagsModel extends Model
     public function tagAssignedToRepository($name): string
     {
         try {
-            $tags = $this->getTagsByName($name);
-            return json_encode($this->getRepositoriesUsersByTag($tags));
+            $IdsRepository = $this->getIdRepositoryByTagName($name);
+            return json_encode($this->getRepositoriesByTag($IdsRepository));
         } catch (InvalidArgumentException $th) {
             return json_encode(array('error' => $th->getMessage()));
         }
     }
 
-    private function getTagsByName($name): object
+    private function getIdRepositoryByTagName($name): object
     {
-        return $this->where('name', 'like', '%' . $name . '%')->get();
+        return $this->select('id_repository', 'name')->where('name', 'like', '%' . $name . '%')->get();
     }
 
-    private function getRepositoriesUsersByTag($tags): array
+    private function getRepositoriesByTag($IdsRepository): array
     {
-        if (empty($tags)) {
-            return json_encode(array('error' => 'This name tag does not exist.'));
+        if (empty($IdsRepository)) {
+            return array('error' => 'This name tag does not exist.');
         }
 
-        $repositoriesAssignedTag = array();
+        $repositoriesByTag = array();
 
-        foreach ($tags as $tag) {
-            $repositories = (new RepositoriesModel())->listRepositories($tag->created_tag_by_username);
-            if (empty($repositories)) {
-                throw new InvalidArgumentException("This user doesn't have any Stars!");
-            }
-
-            $repositoriesAssignedTag = $this->distinctRepositoryById($tag->id_repository, $repositories);
-        }
-        return $repositoriesAssignedTag;
-    }
-
-    private function distinctRepositoryById($id, $repositories): array
-    {
-
-        if (empty($id)) {
-            throw new InvalidArgumentException("The ID field is required.");
+        foreach ($IdsRepository as $id) {
+           $repositoriesByTag[] = $this->findSearchRepositoriesById($id->id_repository, $id->name);
         }
 
-        if (empty($repositories)) {
-            throw new InvalidArgumentException("The Repositories array field is required.");
-        }
-
-        $arrRepositoryByUser = array();
-        foreach ($repositories as  $repository) {
-            if ($id == $repository['repository_id']) {
-                $arrRepositoryByUser[$id] = $repository;
-            }
-        }
-        return $arrRepositoryByUser;
+        return (empty($repositoriesByTag)) ? array('error' => 'This name tag does not exist.') : $repositoriesByTag;
     }
 
 
@@ -115,6 +91,8 @@ class TagsModel extends Model
             }
 
             $validateNameTag = $this->verifyDuplicatedTagByIdRepository(trim(request('name')), request('id_repository'));
+            $this->getRepositoriesToCheckUser();
+            $this->getRepositoriesToCheckIdRepository();
             if ($validateNameTag) {
                 return json_encode(array('error' => 'The  tag name must be unique by repository.'));
             }
@@ -163,4 +141,49 @@ class TagsModel extends Model
         $this->destroy($id);
         return json_encode(array('success' => true));
     }
+
+    private function getRepositoriesToCheckUser(): void
+    {
+        $repositories = (new RepositoriesModel())->get();
+        $arrUsername = array();
+        foreach ($repositories as  $repository) {
+            $arrUsername[] = $repository->username;
+        }
+
+        if (!in_array(trim(request('created_tag_by_username')), $arrUsername)) {
+            $repositories = json_encode((new RepositoriesModel())->listRepositories(request('created_tag_by_username')));
+            (new RepositoriesModel())->saveRepositories($repositories);
+        }
+    }
+
+    private function getRepositoriesToCheckIdRepository(): void
+    {
+        $query = RepositoriesModel::where('username', '=', request('created_tag_by_username'))->get();
+        $arrIdRepository = array();
+        foreach ($query as $repositoriesByUser) {
+            $arrIdRepository[] = $repositoriesByUser->repository_id;
+        }
+
+        if (!in_array(trim(request('id_repository')), $arrIdRepository)) {
+            throw new InvalidArgumentException("This user is not linked with this ID.");
+        }
+    }
+
+    private function findSearchRepositoriesById($id, $name): array
+    {
+        $repository = RepositoriesModel::where('repository_id', '=', $id)->get();
+        foreach ($repository as $dataRepositor) {
+            return [
+                'repository_id' => $dataRepositor->repository_id,
+                'repository_name' => $dataRepositor->repository_name,
+                'description' => $dataRepositor->description,
+                'http_url' => $dataRepositor->http_url,
+                'language' => $dataRepositor->language,
+                'username' => $dataRepositor->username,
+                'tagName' => $name
+            ];
+        }
+        return array();
+    }
+
 }

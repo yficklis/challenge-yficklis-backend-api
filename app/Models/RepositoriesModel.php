@@ -18,6 +18,7 @@ class RepositoriesModel extends Model
         'description',
         'http_url',
         'language',
+        'username'
     ];
 
     private static function optionsHTTPS(): array
@@ -52,14 +53,15 @@ class RepositoriesModel extends Model
         if (empty($repositories)) {
             throw new InvalidArgumentException("This user doesn't have any Stars!");
         }
-
+        $dataReturn = array();
         foreach ($repositories as $key => $repository) {
             $dataReturn[] = array(
                 'repository_id' => $repository->id,
                 'repository_name' => $repository->name,
                 'description' => $repository->description,
                 'http_url' => $repository->html_url,
-                'language' => $repository->language
+                'language' => $repository->language,
+                'username' => $user
             );
         }
 
@@ -81,6 +83,7 @@ class RepositoriesModel extends Model
                     'description' => $repository->description,
                     'http_url' => $repository->http_url,
                     'language' => $repository->language,
+                    'username' => $repository->username,
                 ]);
             }
         }

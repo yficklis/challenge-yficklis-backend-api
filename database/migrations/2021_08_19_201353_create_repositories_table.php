@@ -16,10 +16,11 @@ class CreateRepositoriesTable extends Migration
         Schema::create('repositories', function (Blueprint $table) {
             $table->id();
             $table->integer('repository_id');
-            $table->string('repository_name')->nullable();;
+            $table->string('repository_name')->nullable();
             $table->text('description')->nullable();
-            $table->string('http_url')->nullable();;
-            $table->string('language')->nullable();;
+            $table->string('http_url')->nullable();
+            $table->string('language')->nullable();
+            $table->string('username');
             $table->timestamps();
         });
     }
