@@ -1,4 +1,4 @@
-# Github tag stars API 
+# Github tag stars - API 
 ###### Developed by Yficklis Santos
 
 ## Requirements
