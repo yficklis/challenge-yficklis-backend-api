@@ -11,6 +11,21 @@ class RepositoriesController extends Controller
     {
     }
 
+    /**
+     * @OA\Get(
+     *  path="/api/repositories/{user}",
+     *  tags = {"REPOSITORIES"},
+     *  summary = "List of all started repositories by username.",
+     * @OA\Parameter(
+     *         description="Parameter with mutliple examples",
+     *         in="path",
+     *         name="user",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(response="200", description="ok")
+     * )
+     */
     public function show($user): string
     {
         try {

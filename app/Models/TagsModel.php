@@ -45,7 +45,7 @@ class TagsModel extends Model
         $repositoriesAssignedTag = array();
 
         foreach ($tags as $tag) {
-            $repositories = (new RepositoriesController())->listRepositories($tag->created_tag_by_username);
+            $repositories = (new RepositoriesModel())->listRepositories($tag->created_tag_by_username);
             if (empty($repositories)) {
                 throw new InvalidArgumentException("This user doesn't have any Stars!");
             }
