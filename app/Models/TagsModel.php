@@ -113,6 +113,8 @@ class TagsModel extends Model
     {
         try {
             $validateNameTag = $this->verifyDuplicatedTagByIdRepository(trim(request('name')), request('id_repository'));
+            $this->getRepositoriesToCheckUser();
+            $this->getRepositoriesToCheckIdRepository();
             if ($validateNameTag) {
                 return json_encode(array('error' => 'The tag name must be already exists in repository.'));
             }
