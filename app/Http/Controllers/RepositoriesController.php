@@ -33,7 +33,7 @@ class RepositoriesController extends Controller
             (new RepositoriesModel())->saveRepositories($repositories);
             return $repositories;
         } catch (InvalidArgumentException $th) {
-            return json_encode(array('error' => $th->getMessage()));
+            return json_encode(array('errors' => $th->getMessage()));
         }
     }
 }

@@ -40,18 +40,15 @@ class RepositoriesModel extends Model
             $content = file_get_contents("https://api.github.com/users/{$user}/starred", false, $context);
             return json_decode($content);
         } catch (\Throwable $th) {
-            throw new InvalidArgumentException('Empty name user or Invalid, please try again!');
+            throw new InvalidArgumentException(json_encode(['invalid' => 'Empty name user or Invalid, please try again!']));
         }
     }
 
     public function listRepositories($user): array
     {
-        if (empty($user)) {
-            throw new InvalidArgumentException('Empty name user or Invalid, please try again!');
-        }
         $repositories = $this->getStarredByUserOnGitHub($user);
         if (empty($repositories)) {
-            throw new InvalidArgumentException("This user doesn't have any Stars!");
+            throw new InvalidArgumentException(json_encode(['emptyStars' => "This user doesn't have any Stars!"]));
         }
         $dataReturn = array();
         foreach ($repositories as $key => $repository) {
@@ -71,7 +68,7 @@ class RepositoriesModel extends Model
     public function saveRepositories($repositories): void
     {
         if (empty($repositories)) {
-            throw new InvalidArgumentException("This user doesn't have any Stars!");
+            throw new InvalidArgumentException(json_encode(['emptyStars' => "This user doesn't have any Stars!"]));
         }
 
         $repositories = json_decode($repositories);
@@ -92,7 +89,7 @@ class RepositoriesModel extends Model
     private function checkDirectoryDuplication($repositoryId): bool
     {
         if (empty($repositoryId)) {
-            throw new InvalidArgumentException("The repository is required to validate");
+            throw new InvalidArgumentException(json_encode(['requiredRepository' => "The repository is required to validate"]));
         }
 
         $repositories = array();
