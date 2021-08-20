@@ -87,14 +87,14 @@ class TagsModel extends Model
             ));
 
             if ($validator->fails()) {
-                return json_encode($validator->errors()->toArray());
+                throw new InvalidArgumentException(json_encode($validator->errors()->toArray()));
             }
 
             $validateNameTag = $this->verifyDuplicatedTagByIdRepository(trim(request('name')), request('id_repository'));
             $this->getRepositoriesToCheckUser();
             $this->getRepositoriesToCheckIdRepository();
             if ($validateNameTag) {
-                return json_encode(array('error' => 'The  tag name must be unique by repository.'));
+                throw new InvalidArgumentException(json_encode(array('uniqueTag' => 'The  tag name must be unique by repository.')));
             }
 
             $newTag = $this->create([
@@ -105,7 +105,7 @@ class TagsModel extends Model
             ]);
             return json_encode($newTag);
         } catch (InvalidArgumentException $th) {
-            return json_encode(array('error' => $th->getMessage()));
+            return json_encode(array('errors' => $th->getMessage()));
         }
     }
 
@@ -167,7 +167,7 @@ class TagsModel extends Model
         }
 
         if (!in_array(trim(request('id_repository')), $arrIdRepository)) {
-            throw new InvalidArgumentException("This user is not linked with this ID.");
+            throw new InvalidArgumentException(array('userNotExistId' => "This user is not linked with this ID."));
         }
     }
 
