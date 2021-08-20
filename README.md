@@ -39,3 +39,13 @@ $ php artisan serve
 To Check API documentation - [Click here](http://127.0.0.1:8000/)
 
 __Is necessary start the webserver to checkou the API documentation__
+
+
+## Phpunit tests 
+```
+# Run the phpunit 
+$ vendor\bin\phpunit
+```
+
+## GitHub API
+:warning: The [GitHub](https://api.github.com/) has an hourly rate limitation. Read more about at [Rate limiting](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting)
