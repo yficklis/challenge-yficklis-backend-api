@@ -21,13 +21,9 @@ $ composer global update friendsofphp/php-cs-fixer
 $ php-cs-fixer fix .\php-cs-fixer.dist.php
 ```
 
-## Database
-
-For SQLite, add
+## Running Migrations
 ```
-DB_CONNECTION=sqlite
-DB_HOST=127.0.0.1
-DB_PORT=3306
+$ php artisan migrate:refresh
 ```
 
 If not exists create a _database.sqlite_ file in the _database\database.sqlite_ directory
