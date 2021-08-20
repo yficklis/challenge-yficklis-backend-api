@@ -41,3 +41,5 @@ $ php artisan serve
 ## API Documentation
 
 To Check API documentation - [Click here](http://127.0.0.1:8000/)
+
+__Is necessary start the webserver to checkou the API documentation__
