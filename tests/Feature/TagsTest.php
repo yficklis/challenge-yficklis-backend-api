@@ -90,7 +90,6 @@ class TagsTest extends TestCase
             'created_tag_by_username' => 'mlanes',
         ];
 
-        // TagsModel::create($tagTest);
 
         $this->post('api/tags',  $tagTest)
             ->assertStatus(self::HTTP_OK)
