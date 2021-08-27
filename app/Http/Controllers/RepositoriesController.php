@@ -7,6 +7,14 @@ use App\Models\RepositoriesModel;
 
 class RepositoriesController extends Controller
 {
+    /**
+     * @OA\Get(
+     *  path="/api/repositories",
+     *  tags = {"REPOSITORIES"},
+     *  summary = "List of all started.",
+     *     @OA\Response(response="200", description="ok")
+     * )
+     */
     public function index()
     {
     }
