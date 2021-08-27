@@ -69,7 +69,7 @@ class TagsTest extends TestCase
         $tagTest = [
             'name' => 'tagTest',
             'description' => 'Tag Test Description',
-            'id_repository' => 23211,
+            'id_repository' => 158571863,
             'created_tag_by_username' => 'mlanes',
         ];
 
@@ -77,7 +77,7 @@ class TagsTest extends TestCase
 
         $this->post('api/tags',  $tagTest)
             ->assertStatus(self::HTTP_OK)
-            ->assertJsonStructure(['errors' => ['userNotExistId']]);
+            ->assertJsonStructure(['errors' => ['uniqueTag']]);
     }
 
     public function testTagsShouldReturnSuccessIfAllGoesWell()
@@ -86,14 +86,14 @@ class TagsTest extends TestCase
         $tagTest = [
             'name' => 'tagTest3',
             'description' => 'Tag Test Description',
-            'id_repository' => 107111421,
-            'created_tag_by_username' => 'yficklis',
+            'id_repository' => 78746204,
+            'created_tag_by_username' => 'mlanes',
         ];
 
-        TagsModel::create($tagTest);
+        // TagsModel::create($tagTest);
 
         $this->post('api/tags',  $tagTest)
             ->assertStatus(self::HTTP_OK)
-            ->assertJson(['data'=>['name'=>$tagTest['name']]]);
+            ->assertJson($tagTest);
     }
 }
